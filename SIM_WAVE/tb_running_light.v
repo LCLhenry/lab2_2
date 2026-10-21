@@ -4,7 +4,11 @@ module tb_running_light();
 
     reg sys_clk;
     reg sys_rst_n;
-    wire [3:0] led_out;
+    wire led0;
+    wire led1;
+    wire led2;
+    wire led3;
+
 
     running_light #( .CNT_MAX(4) ) u_running_light (
         .sys_clk   (sys_clk),
