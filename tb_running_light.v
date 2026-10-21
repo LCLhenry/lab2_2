@@ -1,30 +1,37 @@
-`timescale 1ns/1ns
-module tb_running_light;
+`timescale 1ns / 1ps
 
-reg sys_clk;
-reg sys_rst_n;
-wire [3:0] led_out;
+module tb_running_light();
 
-running_light dut(
-    .sys_clk(sys_clk),
-    .sys_rst_n(sys_rst_n),
-    .led_out(led_out)
-);
+    reg sys_clk;
+    reg sys_rst_n;
+    wire [3:0] led_out;
 
-initial begin
-    sys_clk = 1'b0;
-end
-always #10 sys_clk = ~sys_clk;
+    running_light #( .CNT_MAX(4) ) u_running_light (
+        .sys_clk   (sys_clk),
+        .sys_rst_n (sys_rst_n),
+        .led_out   (led_out)
+    );
 
-initial begin
-    $dumpfile("wave.vcd");
-    $dumpvars(0, tb_running_light);
+    initial begin
+        sys_clk = 0;
+        forever #10 sys_clk = ~sys_clk; 
+    end
 
-    sys_rst_n = 1'b0;
-    #20;
-    sys_rst_n = 1'b1;
+    initial begin
+        $dumpfile("wave.vcd");
+        $dumpvars(0, tb_running_light);
 
-    #2000; 
-    $finish;
-end
+        sys_rst_n = 0;
+        #50;
+        sys_rst_n = 1;
+        #500;
+        
+        sys_rst_n = 0;
+        #30;
+        sys_rst_n = 1;
+        #200;
+
+        $finish;
+    end
+
 endmodule
